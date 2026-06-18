@@ -1,9 +1,7 @@
-package com.techmart;
+package com.techmart.core.service;
 
 
 import jakarta.ejb.Remote;
-
-import java.util.List;
 
 @Remote
 public interface UserService {
