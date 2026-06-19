@@ -1,10 +1,17 @@
 package com.techmart.core.service;
 
-
+import com.techmart.core.dto.request.UserRequestDto;
+import com.techmart.core.dto.response.UserResponseDto;
 import jakarta.ejb.Remote;
+
+import java.util.List;
 
 @Remote
 public interface UserService {
-    void getUserById(Long id);
-
+    void registerUser(UserRequestDto requestDto);
+    UserResponseDto getUserById(Integer id);
+    UserResponseDto getUserByEmail(String email);
+    List<UserResponseDto> getAllUsers();
+    void updateUser(Integer id, UserRequestDto requestDto); // ID එක සහ අලුත් දත්ත වෙන වෙනම
+    void deleteUser(Integer id);
 }
