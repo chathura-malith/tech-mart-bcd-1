@@ -9,14 +9,17 @@
     <title>Login | TechMart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/login.css">
+    <link rel="icon" href="${pageContext.request.contextPath}/img/favicon.svg" type="image/svg+xml">
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="index.jsp">TechMart</a>
-    </div>
-</nav>
+<%--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">--%>
+<%--    <div class="container">--%>
+<%--        <a class="navbar-brand" href="index.jsp">TechMart Online</a>--%>
+<%--    </div>--%>
+<%--</nav>--%>
+
+<jsp:include page="header.jsp" />
 
 <div class="container login-container">
     <div class="row justify-content-center">
@@ -69,7 +72,7 @@
         </div>
     </div>
 </div>
-
+<jsp:include page="footer.jsp" />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@WebServlet(name = "UserController", urlPatterns = {"/register-action", "/login-action"})
+@WebServlet(name = "UserController", urlPatterns = {"/register-action", "/login-action", "/logout-action"})
 public class UserController extends HttpServlet {
 
     @EJB
@@ -116,4 +116,19 @@ public class UserController extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String action = request.getServletPath();
+
+        if ("/logout-action".equals(action)) {
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+            response.sendRedirect(request.getContextPath() + "/home");
+        }
+    }
+
 }
