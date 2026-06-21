@@ -68,20 +68,23 @@ public class ProductController extends HttpServlet {
             errorMessages.add("Invalid number format for Price, Stock, or Category.");
         }
 
-// 2. පින්තූරය (File) ලබා ගැනීම සහ Save කිරීම
         String imageFileName = null;
         try {
             Part filePart = request.getPart("image");
             if (filePart != null && filePart.getSize() > 0) {
-                // අලුත් ෆෝල්ඩරය නැත්නම් ඒක හදනවා
                 File uploadDir = new File(UPLOAD_DIR);
                 if (!uploadDir.exists()) uploadDir.mkdirs();
 
-                // එකම නම තියෙන පින්තූර Replace වෙන එක නවත්වන්න UUID එකක් එකතු කරනවා
+                // පරිශීලකයාගේ File එකේ නමෙන් Extension එක (.jpg, .png) පමණක් වෙන් කර ගැනීම
                 String originalFileName = filePart.getSubmittedFileName();
-                imageFileName = UUID.randomUUID().toString() + "_" + originalFileName;
+                String fileExtension = "";
+                if (originalFileName != null && originalFileName.contains(".")) {
+                    fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+                }
 
-                // විසඳුම: filePart.write වෙනුවට Java NIO Files.copy භාවිතය
+                // පරිශීලකයාගේ නම සම්පූර්ණයෙන්ම ඉවත් කර UUID එක පමණක් භාවිත කිරීම
+                imageFileName = UUID.randomUUID().toString() + fileExtension;
+
                 java.io.InputStream fileContent = filePart.getInputStream();
                 java.nio.file.Files.copy(fileContent, new File(uploadDir, imageFileName).toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 

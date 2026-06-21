@@ -53,4 +53,64 @@ public class ProductSessionBean implements ProductService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<ProductResponseDto> searchProducts(String keyword, Integer categoryId, int page, int size) {
+        StringBuilder queryStr = new StringBuilder("SELECT p FROM Product p JOIN FETCH p.category WHERE 1=1");
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            queryStr.append(" AND LOWER(p.name) LIKE LOWER(:keyword)");
+        }
+
+        if (categoryId != null && categoryId > 0) {
+            queryStr.append(" AND p.category.id = :categoryId");
+        }
+
+        var query = em.createQuery(queryStr.toString(), Product.class);
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            query.setParameter("keyword", "%" + keyword.trim() + "%");
+        }
+        if (categoryId != null && categoryId > 0) {
+            query.setParameter("categoryId", categoryId);
+        }
+
+        query.setFirstResult((page - 1) * size);
+        query.setMaxResults(size);
+
+        return query.getResultStream()
+                .map(product -> ProductResponseDto.builder()
+                        .id(product.getId())
+                        .name(product.getName())
+                        .price(product.getPrice())
+                        .stockQuantity(product.getStockQuantity())
+                        .imageUrl(product.getImageUrl())
+                        .categoryId(product.getCategory().getId())
+                        .categoryName(product.getCategory().getName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long getProductTotalCount(String keyword, Integer categoryId) {
+        StringBuilder queryStr = new StringBuilder("SELECT COUNT(p) FROM Product p WHERE 1=1");
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            queryStr.append(" AND LOWER(p.name) LIKE LOWER(:keyword)");
+        }
+        if (categoryId != null && categoryId > 0) {
+            queryStr.append(" AND p.category.id = :categoryId");
+        }
+
+        var query = em.createQuery(queryStr.toString(), Long.class);
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            query.setParameter("keyword", "%" + keyword.trim() + "%");
+        }
+        if (categoryId != null && categoryId > 0) {
+            query.setParameter("categoryId", categoryId);
+        }
+
+        return query.getSingleResult();
+    }
 }

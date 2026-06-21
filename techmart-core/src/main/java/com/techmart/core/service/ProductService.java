@@ -10,4 +10,6 @@ import java.util.List;
 public interface ProductService {
     void addProduct(ProductRequestDto requestDto);
     List<ProductResponseDto> getAllProducts();
+    List<ProductResponseDto> searchProducts(String keyword, Integer categoryId, int page, int size);
+    long getProductTotalCount(String keyword, Integer categoryId);
 }
