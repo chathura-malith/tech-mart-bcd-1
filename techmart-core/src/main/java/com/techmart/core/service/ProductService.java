@@ -12,4 +12,5 @@ public interface ProductService {
     List<ProductResponseDto> getAllProducts();
     List<ProductResponseDto> searchProducts(String keyword, Integer categoryId, int page, int size);
     long getProductTotalCount(String keyword, Integer categoryId);
+    ProductResponseDto getProductById(Integer id);
 }

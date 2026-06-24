@@ -113,4 +113,22 @@ public class ProductSessionBean implements ProductService {
 
         return query.getSingleResult();
     }
+
+    @Override
+    public ProductResponseDto getProductById(Integer id) {
+        Product product = em.find(Product.class, id);
+
+        if (product != null) {
+            return ProductResponseDto.builder()
+                    .id(product.getId())
+                    .name(product.getName())
+                    .price(product.getPrice())
+                    .stockQuantity(product.getStockQuantity())
+                    .imageUrl(product.getImageUrl())
+                    .categoryId(product.getCategory() != null ? product.getCategory().getId() : null)
+                    .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
+                    .build();
+        }
+        return null;
+    }
 }
