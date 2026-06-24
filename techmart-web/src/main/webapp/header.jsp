@@ -36,10 +36,9 @@
         </li>
 
         <li class="nav-item mx-2">
-          <a class="btn btn-outline-light position-relative d-flex align-items-center gap-2" href="#">
+          <a class="btn btn-outline-light position-relative d-flex align-items-center gap-2" href="${pageContext.request.contextPath}/cart.jsp">
             <i class="bi bi-cart3 fs-5"></i> Cart
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                0
+            <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">${not empty sessionScope.cartService ? sessionScope.cartService.cartSize : 0}
             </span>
           </a>
         </li>

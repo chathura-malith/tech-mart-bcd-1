@@ -13,7 +13,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechMart | Buy Latest Laptops, Mobiles & Accessories</title>
+    <title>TechMart Online | Buy Latest Laptops, Mobiles & Accessories</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="${pageContext.request.contextPath}/img/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="css/home.css">
@@ -92,7 +92,7 @@
                                 <h5 class="card-title text-truncate" title="${product.name}">${product.name}</h5>
 
                                 <div class="mt-auto">
-                                    <p class="price-tag mb-2">LKR ${product.price}</p>
+                                    <p class="price-tag mb-2">LKR ${product.price}.00</p>
 
                                     <c:choose>
                                         <c:when test="${product.stockQuantity > 0}">
@@ -103,7 +103,7 @@
                                         </c:otherwise>
                                     </c:choose>
 
-                                    <button class="btn btn-dark w-100 ${product.stockQuantity == 0 ? 'disabled' : ''}">
+                                    <button onclick="addToCart(${product.id})" class="btn btn-dark w-100 ${product.stockQuantity == 0 ? 'disabled' : ''}">
                                         Add to Cart
                                     </button>
                                 </div>
@@ -147,7 +147,26 @@
 
 </div>
 
+<!-- 🌟 Toast Message Container Start -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+    <div id="cartToast" class="toast align-items-center text-bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body fw-bold fs-6">
+                <i class="bi bi-check-circle-fill me-2"></i> Item successfully added to cart!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <jsp:include page="footer.jsp" />
+
+
+<script>
+    const contextPath = '${pageContext.request.contextPath}';
+</script>
+
+<script src="${pageContext.request.contextPath}/js/home.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
