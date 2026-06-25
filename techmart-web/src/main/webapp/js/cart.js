@@ -16,6 +16,10 @@ function changeQty(productId, change) {
     })
         .then(response => response.json())
         .then(data => {
+            if (data.status === 'unauthorized') {
+                window.location.href = data.redirect;
+                return;
+            }
             if (data.status === 'success') {
                 qtyInput.value = newQty;
                 let price = parseFloat(document.getElementById('price-' + productId).innerText);
@@ -35,6 +39,10 @@ function removeCartItem(productId) {
         })
             .then(response => response.json())
             .then(data => {
+                if (data.status === 'unauthorized') {
+                    window.location.href = data.redirect;
+                    return;
+                }
                 if (data.status === 'success') {
                     let row = document.getElementById('product-row-' + productId);
                     row.remove();

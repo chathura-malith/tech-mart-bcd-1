@@ -91,6 +91,11 @@ public class CartController extends HttpServlet {
 
         try {
             HttpSession session = request.getSession(true);
+            Object user = session.getAttribute("user");
+            if (user == null) {
+                response.getWriter().write("{\"status\":\"unauthorized\", \"redirect\":\"" + request.getContextPath() + "/login.jsp\"}");
+                return;
+            }
             CartService cartService = (CartService) session.getAttribute("cartService");
 
             if (cartService == null) {
