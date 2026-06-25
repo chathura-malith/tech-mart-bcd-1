@@ -51,7 +51,7 @@
                                         </thead>
                                         <tbody>
                                         <c:forEach items="${sessionScope.cartService.cartItems}" var="item">
-                                            <%-- JavaScript වලින් අල්ලගන්න හැම පේළියකටම ID එකක් දුන්නා --%>
+
                                             <tr class="border-bottom" id="product-row-${item.productId}">
                                                 <td class="ps-4 py-3">
                                                     <div class="d-flex align-items-center gap-3">

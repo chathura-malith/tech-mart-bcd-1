@@ -8,6 +8,10 @@ function addToCart(productId) {
     })
         .then(response => response.json())
         .then(data => {
+            if (data.status === 'unauthorized') {
+                window.location.href = data.redirect;
+                return;
+            }
             if(data.status === 'success') {
                 let badge = document.getElementById('cart-badge');
                 if(badge) {
