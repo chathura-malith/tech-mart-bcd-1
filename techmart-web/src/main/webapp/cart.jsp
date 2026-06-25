@@ -117,9 +117,10 @@
                                     <span class="fs-4 fw-bold text-danger">LKR <span id="summary-total">${sessionScope.cartService.totalAmount}.00</span></span>
                                 </div>
 
-                                <button class="btn btn-dark w-100 py-3 fw-bold mb-3 rounded-3">
+                                <a href="${pageContext.request.contextPath}/checkout" class="btn btn-dark w-100 py-3 fw-bold mb-3 rounded-3">
                                     Proceed to Checkout
-                                </button>
+                                </a>
+
                                 <a href="${pageContext.request.contextPath}/home" class="btn btn-outline-secondary w-100 py-2 fw-semibold rounded-3">
                                     Continue Shopping
                                 </a>
