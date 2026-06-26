@@ -13,12 +13,6 @@
 </head>
 <body>
 
-<%--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">--%>
-<%--    <div class="container">--%>
-<%--        <a class="navbar-brand" href="index.jsp">TechMart Online</a>--%>
-<%--    </div>--%>
-<%--</nav>--%>
-
 <jsp:include page="header.jsp" />
 
 <div class="container register-container">
