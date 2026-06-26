@@ -6,6 +6,7 @@ import com.techmart.core.dto.response.ProductResponseDto;
 import com.techmart.core.service.CartService;
 import com.techmart.core.service.ProductService;
 import jakarta.ejb.EJB;
+import jakarta.ejb.Remove;
 import jakarta.ejb.Stateful;
 
 import java.math.BigDecimal;
@@ -79,6 +80,7 @@ public class CartServiceBean implements CartService {
     }
 
     @Override
+    @Remove
     public void clearCart() {
         cart.clear();
     }

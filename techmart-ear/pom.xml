@@ -42,12 +42,6 @@
             <version>1.0</version>
             <type>ejb</type>
         </dependency>
-        <dependency>
-            <groupId>com.techmart</groupId>
-            <artifactId>techmart-messaging</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
 
     <build>
@@ -74,11 +68,6 @@
                             <artifactId>techmart-ejb</artifactId>
                             <bundleFileName>ejb.jar</bundleFileName>
                         </ejbModule>
-                        <jarModule>
-                            <groupId>com.techmart</groupId>
-                            <artifactId>techmart-messaging</artifactId>
-                            <bundleFileName>messaging.jar</bundleFileName>
-                        </jarModule>
                     </modules>
                 </configuration>
             </plugin>
