@@ -12,10 +12,39 @@
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
 
+<div id="loadingOverlay" class="d-none position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column justify-content-center align-items-center" style="z-index: 9999;">
+    <div class="spinner-border text-warning" style="width: 4rem; height: 4rem;" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <h4 class="text-white mt-4 fw-bold">Processing Your Payment...</h4>
+    <p class="text-light">Please do not close or refresh this page.</p>
+</div>
+
 <jsp:include page="header.jsp" />
 
 <div class="container my-5">
     <h2 class="mb-4 fw-bold">Checkout</h2>
+
+    <c:if test="${not empty param.error}">
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm rounded-3 mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <c:choose>
+                <c:when test="${param.error == 'payment_failed'}">
+                    <strong>Payment Failed!</strong> Your card was declined. Please check your card details or try a different card.
+                </c:when>
+                <c:when test="${param.error == 'timeout'}">
+                    <strong>Timeout!</strong> The payment gateway is taking too long to respond. Please try again later.
+                </c:when>
+                <c:when test="${param.error == 'invalid_card'}">
+                    <strong>Invalid Details!</strong> Please enter a valid card number to proceed.
+                </c:when>
+                <c:otherwise>
+                    <strong>System Error!</strong> Something went wrong while processing your order. Please try again.
+                </c:otherwise>
+            </c:choose>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </c:if>
 
     <div class="row">
         <div class="col-lg-8 mb-4">
@@ -84,7 +113,7 @@
                         <span class="fs-4 fw-bold text-danger">LKR ${sessionScope.cartService.totalAmount}.00</span>
                     </div>
 
-                    <button type="submit" form="checkoutForm" class="btn btn-warning w-100 py-3 fw-bold mb-3 rounded-3 ${empty addresses ? 'disabled' : ''}">
+                    <button id="btnConfirmOrder" type="button" form="checkoutForm" class="btn btn-warning w-100 py-3 fw-bold mb-3 rounded-3 ${empty addresses ? 'disabled' : ''}">
                         Confirm & Place Order
                     </button>
                     <small class="text-muted text-center d-block">By placing your order, you agree to our Terms and Conditions.</small>
@@ -131,7 +160,83 @@
     </div>
 </div>
 
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold" id="paymentModalLabel">Secure Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Card Number</label>
+                    <input type="text" class="form-control" id="modalCardNumber" name="modalCardNumber" placeholder="1234 5678 9101 1121" required>
+                    <small class="text-muted">Enter a card number ending in '0000' to simulate a payment failure.</small>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label fw-bold">Expiry Date</label>
+                        <input type="text" class="form-control" placeholder="MM/YY" required>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label fw-bold">CVV</label>
+                        <input type="text" class="form-control" placeholder="123" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success w-100 fw-bold" id="btnProcessPayment">
+                    Pay & Complete Order
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <jsp:include page="footer.jsp" />
+
+<script>
+    // document.addEventListener("DOMContentLoaded", function() {
+    //
+    //     const checkoutForm = document.getElementById("checkoutForm");
+    //     const btnConfirmOrder = document.getElementById("btnConfirmOrder");
+    //     const paymentModalElement = document.getElementById('paymentModal');
+    //     let paymentModal;
+    //
+    //     if(typeof bootstrap !== 'undefined') {
+    //         paymentModal = new bootstrap.Modal(paymentModalElement);
+    //     }
+    //
+    //     btnConfirmOrder.addEventListener("click", function(event) {
+    //         event.preventDefault();
+    //         paymentModal.show();
+    //     });
+    //
+    //     document.getElementById("btnProcessPayment").addEventListener("click", function() {
+    //
+    //         const cardNum = document.getElementById("modalCardNumber").value;
+    //         if(cardNum.trim() === "") {
+    //             alert("Please enter a valid card number!");
+    //             return;
+    //         }
+    //
+    //         let hiddenCardInput = document.getElementById("hiddenCardNumber");
+    //         if (!hiddenCardInput) {
+    //             hiddenCardInput = document.createElement("input");
+    //             hiddenCardInput.type = "hidden";
+    //             hiddenCardInput.name = "cardNumber";
+    //             hiddenCardInput.id = "hiddenCardNumber";
+    //             checkoutForm.appendChild(hiddenCardInput);
+    //         }
+    //         hiddenCardInput.value = cardNum;
+    //
+    //         paymentModal.hide();
+    //         document.getElementById("loadingOverlay").classList.remove("d-none");
+    //
+    //         checkoutForm.submit();
+    //     });
+    // });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>

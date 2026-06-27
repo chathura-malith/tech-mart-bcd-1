@@ -5,6 +5,7 @@ import com.techmart.core.dto.message.OrderMessageDto;
 import com.techmart.core.dto.response.UserResponseDto;
 import com.techmart.core.service.CartService;
 import com.techmart.core.service.OrderDispatcherService;
+import com.techmart.core.service.PaymentAndNotificationService;
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,6 +16,9 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "PlaceOrderController", urlPatterns = {"/place-order"})
@@ -23,6 +27,9 @@ public class PlaceOrderController extends HttpServlet {
 
     @EJB
     private OrderDispatcherService orderDispatcherService;
+
+    @EJB
+    private PaymentAndNotificationService paymentService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -47,6 +54,12 @@ public class PlaceOrderController extends HttpServlet {
             return;
         }
 
+        String cardNumber = request.getParameter("cardNumber");
+        if (cardNumber == null || cardNumber.trim().isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/checkout?error=invalid_card");
+            return;
+        }
+
         try {
             Integer addressId = Integer.valueOf(addressIdStr);
 
@@ -65,14 +78,34 @@ public class PlaceOrderController extends HttpServlet {
                     .items(orderItems)
                     .build();
 
-            orderDispatcherService.dispatchOrder(orderMessage);
+            Future<Boolean> paymentResult = paymentService.processPayment(cardNumber, cartService.getTotalAmount());
 
-            cartService.clearCart();
+            try {
+                Boolean isPaid = paymentResult.get(3, TimeUnit.SECONDS);
 
-            session.removeAttribute("cartService");
+                if (isPaid != null && isPaid) {
 
-            response.sendRedirect(request.getContextPath() + "/order-success.jsp");
+                    orderDispatcherService.dispatchOrder(orderMessage);
 
+                    paymentService.sendConfirmationEmail(user.getEmail());
+
+                    cartService.clearCart();
+                    session.removeAttribute("cartService");
+
+                    response.sendRedirect(request.getContextPath() + "/order-success.jsp");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/checkout?error=payment_failed");
+                }
+
+            } catch (TimeoutException e) {
+                System.err.println(" [!] Payment gateway timed out!");
+                paymentResult.cancel(true);
+                response.sendRedirect(request.getContextPath() + "/checkout?error=timeout");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect(request.getContextPath() + "/checkout?error=payment_error");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(request.getContextPath() + "/checkout?error=server_error");
