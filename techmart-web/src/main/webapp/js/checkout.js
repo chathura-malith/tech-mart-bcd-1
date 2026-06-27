@@ -38,4 +38,46 @@ function saveNewAddress() {
             errorAlert.innerText = "Something went wrong! Please try again.";
             errorAlert.classList.remove('d-none');
         });
+
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    const checkoutForm = document.getElementById("checkoutForm");
+    const btnConfirmOrder = document.getElementById("btnConfirmOrder");
+    const paymentModalElement = document.getElementById('paymentModal');
+    let paymentModal;
+
+    if(typeof bootstrap !== 'undefined') {
+        paymentModal = new bootstrap.Modal(paymentModalElement);
+    }
+
+    btnConfirmOrder.addEventListener("click", function(event) {
+        event.preventDefault();
+        paymentModal.show();
+    });
+
+    document.getElementById("btnProcessPayment").addEventListener("click", function() {
+
+        const cardNum = document.getElementById("modalCardNumber").value;
+        if(cardNum.trim() === "") {
+            alert("Please enter a valid card number!");
+            return;
+        }
+
+        let hiddenCardInput = document.getElementById("hiddenCardNumber");
+        if (!hiddenCardInput) {
+            hiddenCardInput = document.createElement("input");
+            hiddenCardInput.type = "hidden";
+            hiddenCardInput.name = "cardNumber";
+            hiddenCardInput.id = "hiddenCardNumber";
+            checkoutForm.appendChild(hiddenCardInput);
+        }
+        hiddenCardInput.value = cardNum;
+
+        paymentModal.hide();
+        document.getElementById("loadingOverlay").classList.remove("d-none");
+
+        checkoutForm.submit();
+    });
+});
