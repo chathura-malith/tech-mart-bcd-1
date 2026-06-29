@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.UUID;
 
 @WebServlet(name = "ProductController", urlPatterns = {"/add-product"})
-// File Uploads සඳහා අනිවාර්ය Annotation එක (Max file size: 10MB)
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, maxFileSize = 1024 * 1024 * 10, maxRequestSize = 1024 * 1024 * 50)
 public class ProductController extends HttpServlet {
 
@@ -35,17 +34,15 @@ public class ProductController extends HttpServlet {
     private ProductService productService;
 
     @EJB
-    private CategoryService categoryService; // Categories ටික Dropdown එකට යවන්න
+    private CategoryService categoryService;
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
 
-    // පින්තූර සේව් කරන ප්‍රධාන ෆෝල්ඩරය (ඔයාගේ Project Path එක)
     private static final String UPLOAD_DIR = "D:/Java Institute/BCD-1/FinalAssessment/Project/techmart/product-images";
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Form එක Load වෙද්දී Categories ටික Database එකෙන් අරන් JSP එකට යවනවා
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {// Form එක Load වෙද්දී Categories ටික Database එකෙන් අරන් JSP එකට යවනවා
         List<CategoryResponseDto> categories = categoryService.getAllCategories();
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("add-product.jsp").forward(request, response);
@@ -55,7 +52,6 @@ public class ProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<String> errorMessages = new ArrayList<>();
 
-        // 1. String අගයන් අංක බවට පත් කිරීම (Error ආවොත් Null තියාගන්නවා, Validator එකෙන් අල්ලගන්න)
         BigDecimal price = null;
         Integer stockQuantity = null;
         Integer categoryId = null;
@@ -75,14 +71,12 @@ public class ProductController extends HttpServlet {
                 File uploadDir = new File(UPLOAD_DIR);
                 if (!uploadDir.exists()) uploadDir.mkdirs();
 
-                // පරිශීලකයාගේ File එකේ නමෙන් Extension එක (.jpg, .png) පමණක් වෙන් කර ගැනීම
                 String originalFileName = filePart.getSubmittedFileName();
                 String fileExtension = "";
                 if (originalFileName != null && originalFileName.contains(".")) {
                     fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
                 }
 
-                // පරිශීලකයාගේ නම සම්පූර්ණයෙන්ම ඉවත් කර UUID එක පමණක් භාවිත කිරීම
                 imageFileName = UUID.randomUUID().toString() + fileExtension;
 
                 java.io.InputStream fileContent = filePart.getInputStream();
@@ -95,35 +89,31 @@ public class ProductController extends HttpServlet {
             errorMessages.add("Image upload failed: " + e.getMessage());
         }
 
-        // 3. DTO එක සෑදීම
         ProductRequestDto requestDto = ProductRequestDto.builder()
                 .name(request.getParameter("name"))
                 .price(price)
                 .stockQuantity(stockQuantity)
                 .categoryId(categoryId)
-                .imageUrl(imageFileName) // සේව් කරපු පින්තූරයේ නම දෙනවා
+                .imageUrl(imageFileName)
                 .build();
 
-        // 4. Validation පරීක්ෂා කිරීම
+
         Set<ConstraintViolation<ProductRequestDto>> violations = validator.validate(requestDto);
         for (ConstraintViolation<ProductRequestDto> violation : violations) {
             errorMessages.add(violation.getMessage());
         }
 
-        // Errors තියෙනවා නම් ආපසු යැවීම
         if (!errorMessages.isEmpty()) {
             request.setAttribute("errors", errorMessages);
             request.setAttribute("productDto", requestDto);
-            // Dropdown එකට Categories ටික ආයෙත් යවන්න ඕනේ
             request.setAttribute("categories", categoryService.getAllCategories());
             request.getRequestDispatcher("add-product.jsp").forward(request, response);
             return;
         }
 
-        // 5. Database එකට Save කිරීම (EJB හරහා)
         try {
             productService.addProduct(requestDto);
-            response.sendRedirect("add-product?success=true"); // සාර්ථක වුණාම ආයෙත් doGet එකටම යවනවා (URL එක ලස්සනට තියාගන්න)
+            response.sendRedirect("add-product?success=true");
         } catch (EJBException e) {
             if (e.getCause() instanceof IllegalArgumentException) {
                 errorMessages.add(e.getCause().getMessage());
