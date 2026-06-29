@@ -32,7 +32,5 @@ public class ProductRequestDto implements Serializable {
     @NotNull(message = "Category is required")
     private Integer categoryId;
 
-    // මේක Frontend එකෙන් කෙලින්ම එන්නේ නැහැ.
-    // Servlet එකේදී File එක Save කළාට පස්සේ අපි මේකට නම Set කරනවා.
     private String imageUrl;
 }

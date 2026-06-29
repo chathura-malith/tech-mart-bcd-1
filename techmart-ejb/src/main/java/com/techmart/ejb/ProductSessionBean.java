@@ -5,7 +5,11 @@ import com.techmart.core.dto.response.ProductResponseDto;
 import com.techmart.core.entity.Category;
 import com.techmart.core.entity.Product;
 import com.techmart.core.service.ProductService;
+import jakarta.annotation.Resource;
 import jakarta.ejb.Stateless;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSContext;
+import jakarta.jms.Topic;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -17,6 +21,12 @@ public class ProductSessionBean implements ProductService {
 
     @PersistenceContext(unitName = "TechMartPU")
     private EntityManager em;
+
+    @Resource(lookup = "jms/TechMartFactory")
+    private ConnectionFactory connectionFactory;
+
+    @Resource(lookup = "jms/ProductTopic")
+    private Topic productTopic;
 
     @Override
     public void addProduct(ProductRequestDto requestDto) {
@@ -36,6 +46,16 @@ public class ProductSessionBean implements ProductService {
                 .build();
 
         em.persist(product);
+
+        try (JMSContext context = connectionFactory.createContext()) {
+            String messagePayload = "New Product Alert: " + product.getName() + " is now available for LKR " + product.getPrice();
+
+            context.createProducer().send(productTopic, messagePayload);
+
+            System.out.println(" [x] Successfully published new product alert to JMS Topic: " + product.getName());
+        } catch (Exception e) {
+            System.err.println(" [!] Failed to publish product notification: " + e.getMessage());
+        }
     }
 
     @Override
