@@ -63,7 +63,6 @@
 
                         <div class="mb-4">
                             <label for="password" class="form-label">Password</label>
-                            <!-- ආරක්ෂාව සඳහා Password එක ආපසු පිරවෙන්නේ නැත -->
                             <input type="password" class="form-control" id="password" name="password"
                                    placeholder="Min 6 characters" required>
                         </div>

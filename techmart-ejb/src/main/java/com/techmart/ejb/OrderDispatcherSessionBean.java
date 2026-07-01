@@ -2,8 +2,10 @@ package com.techmart.ejb;
 
 import com.techmart.core.dto.message.OrderMessageDto;
 import com.techmart.core.service.OrderDispatcherService;
+import com.techmart.ejb.interceptor.MetricsInterceptor;
 import jakarta.annotation.Resource;
 import jakarta.ejb.Stateless;
+import jakarta.interceptor.Interceptors;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSContext;
 import jakarta.jms.Queue;
@@ -11,6 +13,7 @@ import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 
 @Stateless
+@Interceptors(MetricsInterceptor.class)
 public class OrderDispatcherSessionBean implements OrderDispatcherService {
 
     @Resource(lookup = "jms/TechMartFactory")

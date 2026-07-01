@@ -1,9 +1,11 @@
 package com.techmart.ejb;
 
 import com.techmart.core.service.PaymentAndNotificationService;
+import com.techmart.ejb.interceptor.MetricsInterceptor;
 import jakarta.ejb.AsyncResult;
 import jakarta.ejb.Asynchronous;
 import jakarta.ejb.Stateless;
+import jakarta.interceptor.Interceptors;
 
 import java.math.BigDecimal;
 import java.util.concurrent.Future;
@@ -13,6 +15,7 @@ public class PaymentAndNotificationSessionBean implements PaymentAndNotification
 
     @Override
     @Asynchronous
+    @Interceptors(MetricsInterceptor.class)
     public Future<Boolean> processPayment(String cardNumber, BigDecimal amount) {
         System.out.println(" [x] Processing payment of LKR " + amount + " for card ending in: " + cardNumber.substring(Math.max(0, cardNumber.length() - 4)));
 

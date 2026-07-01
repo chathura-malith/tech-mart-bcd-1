@@ -195,49 +195,6 @@
 
 <jsp:include page="footer.jsp" />
 
-<script>
-    // document.addEventListener("DOMContentLoaded", function() {
-    //
-    //     const checkoutForm = document.getElementById("checkoutForm");
-    //     const btnConfirmOrder = document.getElementById("btnConfirmOrder");
-    //     const paymentModalElement = document.getElementById('paymentModal');
-    //     let paymentModal;
-    //
-    //     if(typeof bootstrap !== 'undefined') {
-    //         paymentModal = new bootstrap.Modal(paymentModalElement);
-    //     }
-    //
-    //     btnConfirmOrder.addEventListener("click", function(event) {
-    //         event.preventDefault();
-    //         paymentModal.show();
-    //     });
-    //
-    //     document.getElementById("btnProcessPayment").addEventListener("click", function() {
-    //
-    //         const cardNum = document.getElementById("modalCardNumber").value;
-    //         if(cardNum.trim() === "") {
-    //             alert("Please enter a valid card number!");
-    //             return;
-    //         }
-    //
-    //         let hiddenCardInput = document.getElementById("hiddenCardNumber");
-    //         if (!hiddenCardInput) {
-    //             hiddenCardInput = document.createElement("input");
-    //             hiddenCardInput.type = "hidden";
-    //             hiddenCardInput.name = "cardNumber";
-    //             hiddenCardInput.id = "hiddenCardNumber";
-    //             checkoutForm.appendChild(hiddenCardInput);
-    //         }
-    //         hiddenCardInput.value = cardNum;
-    //
-    //         paymentModal.hide();
-    //         document.getElementById("loadingOverlay").classList.remove("d-none");
-    //
-    //         checkoutForm.submit();
-    //     });
-    // });
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const contextPath = '${pageContext.request.contextPath}';

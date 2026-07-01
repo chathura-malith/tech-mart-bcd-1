@@ -42,7 +42,7 @@ public class ProductController extends HttpServlet {
     private static final String UPLOAD_DIR = "D:/Java Institute/BCD-1/FinalAssessment/Project/techmart/product-images";
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {// Form එක Load වෙද්දී Categories ටික Database එකෙන් අරන් JSP එකට යවනවා
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<CategoryResponseDto> categories = categoryService.getAllCategories();
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("add-product.jsp").forward(request, response);

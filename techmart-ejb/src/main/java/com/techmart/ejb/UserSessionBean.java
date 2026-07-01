@@ -5,7 +5,9 @@ import com.techmart.core.dto.response.UserResponseDto;
 import com.techmart.core.entity.User;
 import com.techmart.core.enums.UserRole;
 import com.techmart.core.service.UserService;
+import com.techmart.ejb.interceptor.MetricsInterceptor;
 import jakarta.ejb.Stateless;
+import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
+@Interceptors(MetricsInterceptor.class)
 public class UserSessionBean implements UserService {
 
     @PersistenceContext(unitName = "TechMartPU")

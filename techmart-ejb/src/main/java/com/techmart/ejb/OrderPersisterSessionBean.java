@@ -66,7 +66,9 @@ import com.techmart.core.entity.OrderItem;
 import com.techmart.core.entity.Product;
 import com.techmart.core.entity.User;
 import com.techmart.core.enums.OrderStatus;
+import com.techmart.ejb.interceptor.MetricsInterceptor;
 import jakarta.ejb.Stateless;
+import jakarta.interceptor.Interceptors;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.persistence.EntityManager;
@@ -77,6 +79,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
+@Interceptors(MetricsInterceptor.class)
 public class OrderPersisterSessionBean {
 
     @PersistenceContext

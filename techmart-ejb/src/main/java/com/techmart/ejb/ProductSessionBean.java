@@ -7,16 +7,19 @@ import com.techmart.core.entity.Product;
 import com.techmart.core.service.ProductService;
 import jakarta.annotation.Resource;
 import jakarta.ejb.Stateless;
+import jakarta.interceptor.Interceptors;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSContext;
 import jakarta.jms.Topic;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import com.techmart.ejb.interceptor.MetricsInterceptor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
+@Interceptors(MetricsInterceptor.class)
 public class ProductSessionBean implements ProductService {
 
     @PersistenceContext(unitName = "TechMartPU")
