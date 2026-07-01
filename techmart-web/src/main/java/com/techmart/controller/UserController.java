@@ -4,6 +4,7 @@ import com.techmart.core.dto.request.LoginRequestDto;
 import com.techmart.core.dto.request.UserRequestDto;
 import com.techmart.core.dto.response.UserResponseDto;
 import com.techmart.core.service.AuthService;
+import com.techmart.core.service.SystemMetricsService;
 import com.techmart.core.service.UserService;
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@WebServlet(name = "UserController", urlPatterns = {"/register-action", "/login-action", "/logout-action"})
+@WebServlet(name = "UserController", urlPatterns = {"/register-action", "/login-action", "/logout-action","/admin-login-action"})
 public class UserController extends HttpServlet {
 
     @EJB
@@ -30,6 +31,9 @@ public class UserController extends HttpServlet {
 
     @EJB
     private AuthService authService;
+
+    @EJB
+    private SystemMetricsService metricsService;
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
@@ -43,6 +47,42 @@ public class UserController extends HttpServlet {
             registerUser(request, response);
         } else if ("/login-action".equals(action)) {
             loginUser(request, response);
+        }else if ("/admin-login-action".equals(action)) {
+            loginAdmin(request, response);
+        }
+    }
+
+    private void loginAdmin(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+
+        LoginRequestDto loginDto = LoginRequestDto.builder()
+                .email(request.getParameter("email"))
+                .password(request.getParameter("password"))
+                .build();
+
+        List<String> errorMessages = new ArrayList<>();
+        UserResponseDto loggedUser = authService.login(loginDto);
+
+        if (loggedUser != null) {
+            if ("ADMIN".equals(loggedUser.getRole())) {
+                HttpSession session = request.getSession();
+                session.setAttribute("admin", loggedUser);
+
+                if (metricsService != null) {
+                    metricsService.incrementActiveUsers();
+                }
+                response.sendRedirect(request.getContextPath() + "/admin-dashboard");
+            } else {
+                errorMessages.add("Access Denied: You do not have Administrator privileges.");
+                request.setAttribute("errors", errorMessages);
+                request.setAttribute("loginDto", loginDto);
+                request.getRequestDispatcher("admin-login.jsp").forward(request, response);
+            }
+        } else {
+            errorMessages.add("Invalid admin email address or password.");
+            request.setAttribute("errors", errorMessages);
+            request.setAttribute("loginDto", loginDto);
+            request.getRequestDispatcher("admin-login.jsp").forward(request, response);
         }
     }
 
@@ -108,6 +148,11 @@ public class UserController extends HttpServlet {
         if (loggedUser != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", loggedUser);
+
+            if (metricsService != null) {
+                metricsService.incrementActiveUsers();
+            }
+
             response.sendRedirect("index.jsp");
         } else {
             errorMessages.add("Invalid email address or password.");
@@ -126,7 +171,12 @@ public class UserController extends HttpServlet {
             HttpSession session = request.getSession(false);
             if (session != null) {
                 session.invalidate();
+
+                if (metricsService != null) {
+                    metricsService.decrementActiveUsers();
+                }
             }
+
             response.sendRedirect(request.getContextPath() + "/home");
         }
     }

@@ -5,9 +5,11 @@ import com.techmart.core.dto.response.CartItemResponseDto;
 import com.techmart.core.dto.response.ProductResponseDto;
 import com.techmart.core.service.CartService;
 import com.techmart.core.service.ProductService;
+import com.techmart.ejb.interceptor.MetricsInterceptor;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Remove;
 import jakarta.ejb.Stateful;
+import jakarta.interceptor.Interceptors;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Stateful
+@Interceptors(MetricsInterceptor.class)
 public class CartServiceBean implements CartService {
 
     @EJB

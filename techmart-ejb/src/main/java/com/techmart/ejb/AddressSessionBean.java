@@ -5,7 +5,9 @@ import com.techmart.core.dto.response.AddressResponseDto;
 import com.techmart.core.entity.Address;
 import com.techmart.core.entity.User;
 import com.techmart.core.service.AddressService;
+import com.techmart.ejb.interceptor.MetricsInterceptor;
 import jakarta.ejb.Stateless;
+import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
+@Interceptors(MetricsInterceptor.class)
 public class AddressSessionBean implements AddressService {
 
     @PersistenceContext(unitName = "TechMartPU")

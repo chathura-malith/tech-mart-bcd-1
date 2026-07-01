@@ -4,13 +4,16 @@ import com.techmart.core.dto.request.LoginRequestDto;
 import com.techmart.core.dto.response.UserResponseDto;
 import com.techmart.core.entity.User;
 import com.techmart.core.service.AuthService;
+import com.techmart.ejb.interceptor.MetricsInterceptor;
 import jakarta.ejb.Stateless;
+import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
 @Stateless
+@Interceptors(MetricsInterceptor.class)
 public class AuthSessionBean implements AuthService {
 
     @PersistenceContext(unitName = "TechMartPU")

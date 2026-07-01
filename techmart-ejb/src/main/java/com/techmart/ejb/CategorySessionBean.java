@@ -54,9 +54,11 @@ import com.techmart.core.dto.request.CategoryRequestDto;
 import com.techmart.core.dto.response.CategoryResponseDto;
 import com.techmart.core.entity.Category;
 import com.techmart.core.service.CategoryService;
+import com.techmart.ejb.interceptor.MetricsInterceptor;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
+import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -66,6 +68,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 @Startup
+@Interceptors(MetricsInterceptor.class)
 public class CategorySessionBean implements CategoryService {
 
     @PersistenceContext(unitName = "TechMartPU")

@@ -12,6 +12,6 @@ public interface UserService {
     UserResponseDto getUserById(Integer id);
     UserResponseDto getUserByEmail(String email);
     List<UserResponseDto> getAllUsers();
-    void updateUser(Integer id, UserRequestDto requestDto); // ID එක සහ අලුත් දත්ත වෙන වෙනම
+    void updateUser(Integer id, UserRequestDto requestDto);
     void deleteUser(Integer id);
 }

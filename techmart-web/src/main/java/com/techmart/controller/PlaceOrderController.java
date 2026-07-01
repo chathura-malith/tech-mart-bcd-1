@@ -6,6 +6,7 @@ import com.techmart.core.dto.response.UserResponseDto;
 import com.techmart.core.service.CartService;
 import com.techmart.core.service.OrderDispatcherService;
 import com.techmart.core.service.PaymentAndNotificationService;
+import com.techmart.core.service.SystemMetricsService;
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,6 +31,9 @@ public class PlaceOrderController extends HttpServlet {
 
     @EJB
     private PaymentAndNotificationService paymentService;
+
+    @EJB
+    private SystemMetricsService metricsService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -86,8 +90,14 @@ public class PlaceOrderController extends HttpServlet {
                 if (isPaid != null && isPaid) {
 
                     orderDispatcherService.dispatchOrder(orderMessage);
-
                     paymentService.sendConfirmationEmail(user.getEmail());
+
+                    if (metricsService != null) {
+                        int totalItemsInOrder = cartService.getCartItems().stream()
+                                .mapToInt(item -> item.getQuantity())
+                                .sum();
+                        metricsService.recordSale(totalItemsInOrder);
+                    }
 
                     cartService.clearCart();
                     session.removeAttribute("cartService");

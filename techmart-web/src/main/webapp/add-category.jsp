@@ -12,20 +12,10 @@
     <link rel="stylesheet" href="css/add-category.css">
     </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100 bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="index.jsp">TechMart Admin</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.jsp">Home</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<jsp:include page="admin-header.jsp" />
+
 
 <div class="container admin-container">
     <div class="row justify-content-center">
@@ -68,6 +58,9 @@
         </div>
     </div>
 </div>
+
+<jsp:include page="footer.jsp" />
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

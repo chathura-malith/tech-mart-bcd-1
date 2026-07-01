@@ -147,7 +147,6 @@
 
 </div>
 
-<!-- 🌟 Toast Message Container Start -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
     <div id="cartToast" class="toast align-items-center text-bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
